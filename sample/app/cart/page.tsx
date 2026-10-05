@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCart } from "@/context/CartContext";
 import { getProduct } from "@/lib/products";
-import { makeOrderId, saveOrder, type OrderItem } from "@/lib/orders";
+import { makeOrderId, saveOrder, saveOrderToCloud, type OrderItem } from "@/lib/orders";
 
 export default function CartPage() {
   const { lines, total, setQty, remove, clear } = useCart();
@@ -18,7 +18,7 @@ export default function CartPage() {
   const [pickupTime, setPickupTime] = useState("");
   const [error, setError] = useState("");
 
-  function submit() {
+  async function submit() {
     if (!name.trim()) return setError("请填写姓名");
     if (!/^1[3-9]\d{9}$/.test(phone.trim())) return setError("请填写正确的 11 位手机号");
     if (!pickupTime) return setError("请选择取货时间");
@@ -30,7 +30,7 @@ export default function CartPage() {
       return [{ productId: product.id, name: product.name, price: product.price, qty: line.qty }];
     });
 
-    saveOrder({
+    const order = {
       id: makeOrderId(),
       createdAt: new Date().toISOString(),
       name: name.trim(),
@@ -38,8 +38,13 @@ export default function CartPage() {
       pickupTime,
       items,
       total,
-      status: "待取货",
-    });
+      status: "待取货" as const,
+    };
+
+    // 本地先存，保证"我的订单"秒开；再异步同步到云端，店主后台才能看到
+    // 云写入失败不阻塞下单（比如没配环境 ID 或断网）
+    saveOrder(order);
+    saveOrderToCloud(order).catch(() => {});
 
     clear();
     router.push("/orders");
