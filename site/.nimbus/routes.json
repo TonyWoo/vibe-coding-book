@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "base": "/vibe-coding-book/",
+  "knownRoutes": [
+    "/",
+    "/404",
+    "/ai-coding-tools",
+    "/ai-features",
+    "/building-mvp",
+    "/deployment",
+    "/dev-in-action",
+    "/git",
+    "/growth",
+    "/idea-validation",
+    "/monetization",
+    "/planning",
+    "/prompting",
+    "/quality",
+    "/security",
+    "/ui-ux"
+  ],
+  "opaqueNamespaces": []
+}

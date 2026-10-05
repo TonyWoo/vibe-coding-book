@@ -1,4 +1,5 @@
 ---
+// 《人人都能开发软件》首页：直接展示内容 —— 14 章直达，无版本选择
 import BaseLayout from "../layouts/BaseLayout.astro";
 import Header from "../components/Header.astro";
 import { config } from "virtual:nimbus/config";
@@ -9,57 +10,58 @@ import { withBase } from "@cloudflare/nimbus-docs/runtime";
 export const prerender = true;
 
 const base = import.meta.env.BASE_URL;
-const csharpUrl = withBase("book/", base);
-const javaUrl = withBase("book-java/", base);
-const coverUrl = withBase("images/cover-blueprint.png", base);
+
+const chapters = [
+  { slug: "idea-validation", title: "第 1 章 想法：从\"我有一个点子\"到\"值得做\"" },
+  { slug: "ai-coding-tools", title: "第 2 章 选你的 AI 结对编程搭档" },
+  { slug: "prompting", title: "第 3 章 让 AI 听懂你" },
+  { slug: "planning", title: "第 4 章 动手前的蓝图" },
+  { slug: "building-mvp", title: "第 5 章 从 0 到 1 搭出 MVP" },
+  { slug: "ui-ux", title: "第 6 章 好看不求人" },
+  { slug: "dev-in-action", title: "第 7 章 AI 写代码时，你在干什么" },
+  { slug: "ai-features", title: "第 8 章 给软件装上大脑" },
+  { slug: "quality", title: "第 9 章 调试与测试：让 AI 帮你抓 bug" },
+  { slug: "git", title: "第 10 章 Git：给代码上保险" },
+  { slug: "deployment", title: "第 11 章 部署上线：让全世界访问" },
+  { slug: "security", title: "第 12 章 安全：别在上线当天翻车" },
+  { slug: "monetization", title: "第 13 章 变现：把软件变成收入" },
+  { slug: "growth", title: "第 14 章 发布与增长：让人知道你的产品" },
+];
 ---
 
 <BaseLayout title={config.title} description={config.description}>
   <div class="flex flex-col min-h-screen">
     <Header />
     <main id="main-content" tabindex="-1" class="flex-1 mx-auto max-w-4xl w-full px-6 py-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <!-- 封面 -->
-        <div class="flex justify-center">
-          <img
-            src={coverUrl}
-            alt="《白话软件架构设计》封面"
-            class="rounded-lg shadow-xl w-full max-w-sm"
-            loading="eager"
-          />
-        </div>
-        <!-- 标题与版本入口 -->
-        <div>
-          <h1
-            class="text-foreground leading-tight"
-            style="font-size: var(--nb-h1-size); font-weight: var(--nb-h1-weight); letter-spacing: var(--nb-h1-tracking);"
-          >
-            {config.title}
-          </h1>
-          <p class="mt-3 text-[1.0625rem] text-muted-foreground leading-relaxed">
-            {config.description}
-          </p>
-          <p class="mt-2 text-sm text-muted-foreground">
-            著 Tony Wu · tonywoo@outlook.com
-          </p>
+      <h1
+        class="text-foreground leading-tight"
+        style="font-size: var(--nb-h1-size); font-weight: var(--nb-h1-weight); letter-spacing: var(--nb-h1-tracking);"
+      >
+        {config.title}
+      </h1>
+      <p class="mt-3 text-[1.0625rem] text-muted-foreground leading-relaxed">
+        {config.description}
+      </p>
+      <p class="mt-2 text-sm text-muted-foreground">
+        著 Tony Wu
+      </p>
+      <p class="mt-4 text-muted-foreground leading-relaxed">
+        全书跟着一个贯穿案例走：烘焙店主林小满，用 AI 从零做出自家小店的线上订货系统。
+        从想法验证到上线变现，14 章带你走完。
+      </p>
 
-          <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-            <a
-              href={csharpUrl}
-              class="block rounded-lg border border-border p-5 transition-colors hover:border-border-strong no-underline"
-            >
-              <div class="font-medium text-foreground text-lg">C# 版</div>
-              <div class="mt-1 text-sm text-muted-foreground">.NET 技术栈 · 69 个示例</div>
-            </a>
-            <a
-              href={javaUrl}
-              class="block rounded-lg border border-border p-5 transition-colors hover:border-border-strong no-underline"
-            >
-              <div class="font-medium text-foreground text-lg">Java 版</div>
-              <div class="mt-1 text-sm text-muted-foreground">Spring Boot 技术栈 · 69 个示例</div>
-            </a>
-          </div>
-        </div>
+      <h2 class="mt-12 text-foreground" style="font-size: var(--nb-h2-size); font-weight: var(--nb-h2-weight);">
+        章节
+      </h2>
+      <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {chapters.map((c) => (
+          <a
+            href={withBase(`${c.slug}/`, base)}
+            class="block rounded-lg border border-border p-5 transition-colors hover:border-border-strong no-underline"
+          >
+            <div class="font-medium text-foreground">{c.title}</div>
+          </a>
+        ))}
       </div>
     </main>
   </div>
