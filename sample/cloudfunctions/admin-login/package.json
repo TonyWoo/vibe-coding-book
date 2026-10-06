@@ -1,0 +1,1 @@
+{"dependencies":{"@cloudbase/node-sdk":"^2.9.0"},"description":"店主后台登录：服务端校验密码，签发 CloudBase 登录票据","main":"index.js","name":"admin-login","version":"1.0.0"}

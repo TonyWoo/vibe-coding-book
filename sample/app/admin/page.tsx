@@ -1,9 +1,13 @@
 // 店主后台 /admin：看云端全部订单、标记完成
-// 简单密码保护（示例级别）：密码配在 .env.local 的 NEXT_PUBLIC_ADMIN_PASSWORD，
-// 默认 xiaoman123，上线前务必改掉。正式做法见书中第 12 章（登录与授权）。
+//
+// 安全模型：密码校验在 CloudBase 云函数 admin-login 里完成（服务端），
+// 前端永远拿不到密码。校验通过后前端用票据登录，读订单走数据库安全规则
+// （orders 集合：create 所有人可写，read/update 仅登录用户）。
+// 部署步骤见 README 和 cloudfunctions/admin-login/index.js 头部注释。
 "use client";
 
 import { useState } from "react";
+import { getCloudApp } from "@/lib/cloudbase";
 import {
   cloudEnabled,
   completeCloudOrder,
@@ -12,42 +16,60 @@ import {
   type Order,
 } from "@/lib/orders";
 
-const DEFAULT_PASSWORD = "xiaoman123";
-
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
-
-  const expected = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || DEFAULT_PASSWORD;
+  const [loggingIn, setLoggingIn] = useState(false);
 
   async function refresh() {
     setLoading(true);
     try {
       setOrders(await loadCloudOrders());
     } catch {
-      setError("读取订单失败，请检查网络或 CloudBase 配置");
+      setError("读取订单失败：请检查网络，或确认数据库安全规则允许登录用户读取");
     } finally {
       setLoading(false);
     }
   }
 
-  function login() {
-    if (password === expected) {
+  // 密码发给云函数校验，通过后拿票据登录（密码不出前端 → 云函数这一跳之外）
+  async function login() {
+    const app = getCloudApp();
+    if (!app) return;
+    setLoggingIn(true);
+    setError("");
+    try {
+      const res = await app.callFunction({
+        name: "admin-login",
+        data: { password },
+      });
+      const result = res.result as { ok: boolean; ticket?: string; error?: string };
+      if (!result.ok) {
+        setError(result.error || "登录失败");
+        return;
+      }
+      // 注：@cloudbase/js-sdk 的类型定义未暴露 signInWithTicket（运行时存在），这里做一次类型断言
+      const auth = app.auth() as unknown as {
+        signInWithTicket: (ticket: string) => Promise<unknown>;
+      };
+      await auth.signInWithTicket(result.ticket!);
       setAuthed(true);
-      setError("");
+      setPassword("");
       refresh();
-    } else {
-      setError("密码不对");
+    } catch {
+      setError("登录失败：请检查网络，或确认 admin-login 云函数已部署");
+    } finally {
+      setLoggingIn(false);
     }
   }
 
   async function markComplete(id: string) {
     const ok = await completeCloudOrder(id);
     if (ok) refresh();
-    else setError("标记失败，请重试");
+    else setError("标记失败：请确认数据库安全规则允许登录用户更新");
   }
 
   if (!cloudEnabled()) {
@@ -68,6 +90,9 @@ export default function AdminPage() {
     return (
       <div className="mx-auto max-w-sm py-16">
         <h1 className="text-center text-2xl font-bold text-stone-800">🔐 店主后台</h1>
+        <p className="mt-2 text-center text-xs text-stone-400">
+          密码在云端校验，不会暴露在前端代码里
+        </p>
         <input
           type="password"
           value={password}
@@ -79,9 +104,10 @@ export default function AdminPage() {
         {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
         <button
           onClick={login}
-          className="mt-4 w-full rounded-full bg-amber-600 py-2.5 font-medium text-white hover:bg-amber-700"
+          disabled={loggingIn}
+          className="mt-4 w-full rounded-full bg-amber-600 py-2.5 font-medium text-white hover:bg-amber-700 disabled:opacity-50"
         >
-          进入
+          {loggingIn ? "验证中…" : "进入"}
         </button>
       </div>
     );
