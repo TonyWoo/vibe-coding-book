@@ -5,7 +5,7 @@ sidebar:
   order: 100
   label: "第 10 章 Git：给代码上保险"
   group:
-    label: "第10章 · Git：给代码上保险"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

@@ -5,7 +5,7 @@ sidebar:
   order: 90
   label: "第 9 章 调试与测试：让 AI 帮你抓 bug"
   group:
-    label: "第9章 · 调试与测试：让 AI 帮你抓 bug"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

@@ -5,7 +5,7 @@ sidebar:
   order: 50
   label: "第 5 章 从 0 到 1 搭出 MVP"
   group:
-    label: "第5章 · 从 0 到 1 搭出 MVP"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

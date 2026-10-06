@@ -99,7 +99,9 @@ function main() {
     const chNum = chapters.length + 1;
     const chSlug = stripNum(g);
     const chTitle = head.title || `第${chNum}章`;
-    const groupLabel = `第${chNum}章 · ${chTitle.replace(/^第\s*\d+\s*章\s*/, '')}`;
+    // 14 章共用一个"章节"分组：每章本来就只有一页，不再按章建分组，
+    // 否则分组名"第N章 · xxx"会和页面标题"第 N 章 xxx"里的章号重复
+    const groupLabel = '章节';
     chapters.push({ slug: chSlug, title: chTitle });
     write(
       `${chSlug}/index.md`,

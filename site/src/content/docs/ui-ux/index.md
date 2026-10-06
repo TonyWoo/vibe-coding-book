@@ -5,7 +5,7 @@ sidebar:
   order: 60
   label: "第 6 章 好看不求人"
   group:
-    label: "第6章 · 好看不求人"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

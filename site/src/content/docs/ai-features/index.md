@@ -5,7 +5,7 @@ sidebar:
   order: 80
   label: "第 8 章 给软件装上大脑"
   group:
-    label: "第8章 · 给软件装上大脑"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

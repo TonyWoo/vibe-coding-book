@@ -5,7 +5,7 @@ sidebar:
   order: 70
   label: "第 7 章 AI 写代码时，你在干什么"
   group:
-    label: "第7章 · AI 写代码时，你在干什么"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

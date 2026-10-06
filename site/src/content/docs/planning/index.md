@@ -5,7 +5,7 @@ sidebar:
   order: 40
   label: "第 4 章 动手前的蓝图"
   group:
-    label: "第4章 · 动手前的蓝图"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**

@@ -5,7 +5,7 @@ sidebar:
   order: 30
   label: "第 3 章 让 AI 听懂你"
   group:
-    label: "第3章 · 让 AI 听懂你"
+    label: "章节"
 ---
 
 **贯穿案例 · 林小满**
